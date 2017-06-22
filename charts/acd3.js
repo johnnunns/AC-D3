@@ -74,8 +74,8 @@ class acd3 {
             .on('mouseleave', (d) => {
                 this.muteOnMouseLeave(d.data);
             })
-            .on('click', (d) => {
-                this.handleClick(d.data)
+            .on('click', (d, i) => {
+                this.handleClick(d.data, i)
             });
 
         foreignObject = g.append('foreignObject')
@@ -107,13 +107,16 @@ class acd3 {
         else {
             foreignObject.attr('x', (d) => d.x - d.r)
                 .attr('y', (d) => d.y - d.r)
+                .attr('id', (d, i)=> 'foreignID_' + i)
 
             div = foreignObject.append('xhtml:div')
+                .attr('id', (d, i)=> 'divID_' + i)
                 .style('width', (d) => (d.r * 2) + 'px')
                 .style('height', (d) => (d.r * 2) + 'px')
                 .style('border-radius', (d) => d.r + 'px')
                 .style('-webkit-mask-image', '-webkit-radial-gradient(circle, white 100%, black 100%)')
                 .style('position', 'relative')
+                
 
             video = div.append((d) => {
                 return d.data.type === 'video'
@@ -171,24 +174,38 @@ class acd3 {
         else this.playerStore[videoID].volume = 0;
     }
 
-    handleClick(data) {
+    handleClick(data, i) {
         let videoID = data.v_id;
-        // d.value = d.value *100
-        //     let video = d3.selectAll('g')
-        //     .data(d)
-        //     .enter().append('circle')
-        //     .attr("r", 1000)  
-        let something = d3.select('#' + videoID)
-        console.log(something)
+       d3.selectAll('div')
+       .transition()
+    //    .style('display', 'none')
+       .style('width', 0 + 'px')
+        .style('height', 0+ 'px')
         
-            d3.select('#' + videoID).attr("r", this.config.diameter);
-        
-        let div = d3.select('div');
-        console.log(div)
-        d3.select('foreignObject').attr('height', this.config.diameter)
-        d3.select('div').attr('width', this.config.diameter)
-        d3.select('#' + videoID).attr('height', this.config.diameter)
+       d3.selectAll('circle')
+       .transition()
+            //   .style('display', 'none')
+       .style('r', 0 + 'px')
+        .style('height', 0+ 'px');
 
+
+        d3.select('#'+videoID)
+        .transition()
+        .style('width', 600 + 'px')
+        .style('height', 400 + 'px');
+
+
+        d3.select('#foreignID_' + i)
+        .style('pointer-events', 'auto')
+        
+        // d3.selectAll('foreignObject'f).transition().attr('x', this.config.diameter)
+        d3.select('#divID_'+i)
+        .transition()
+        .style('border-radius', 0 + 'px')
+        .style('width', 800 + 'px')
+        .style('height', 800 + 'px')
+        console.log(this.playerStore[videoID])
+        this.playerStore[videoID].unMute();
 
     }
 
