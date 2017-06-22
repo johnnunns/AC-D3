@@ -178,12 +178,14 @@ class acd3 {
         //     .data(d)
         //     .enter().append('circle')
         //     .attr("r", 1000)  
-
-        //         d3.select(this).on("click", function() {
-        //   d3.select(this).attr("r", 300);
+        let something = d3.select('#' + videoID)
+        console.log(something)
+        
+            d3.select('#' + videoID).attr("r", this.config.diameter);
+        
         let div = d3.select('div');
         console.log(div)
-        d3.select('div').attr('height', this.config.diameter)
+        d3.select('foreignObject').attr('height', this.config.diameter)
         d3.select('div').attr('width', this.config.diameter)
         d3.select('#' + videoID).attr('height', this.config.diameter)
 
