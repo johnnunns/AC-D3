@@ -73,7 +73,7 @@ class acd3 {
             .attr("r", (d) => d.r)
             .attr('id', (d, i) => "circleID_" + i)
             .style('opacity', '0')
-            
+
             .on('mouseenter', (d) => {
                 this.unmuteOnMouseEnter(d.data);
             })
@@ -83,8 +83,8 @@ class acd3 {
             .on('click', (d, i) => {
                 this.handleClick(d.data, i)
             });
-            
-        
+
+
 
         foreignObject = g.append('foreignObject')
             .style('pointer-events', 'none');
@@ -115,7 +115,7 @@ class acd3 {
         else {
             foreignObject.attr('x', (d) => d.x - d.r)
                 .attr('y', (d) => d.y - d.r)
-                .attr('id', (d, i) => 'foreignID_' + i)
+                .attr('id', (d, i) => 'foreignID_' + i);
 
             div = foreignObject.append('xhtml:div')
                 .attr('id', (d, i) => 'divID_' + i)
@@ -123,7 +123,7 @@ class acd3 {
                 .style('height', (d) => (d.r * 2) + 'px')
                 .style('border-radius', (d) => d.r + 'px')
                 .style('-webkit-mask-image', '-webkit-radial-gradient(circle, white 100%, black 100%)')
-                .style('position', 'relative')
+                .style('position', 'relative');
 
 
             video = div.append((d) => {
@@ -141,7 +141,7 @@ class acd3 {
                 .style('position', 'absolute');
 
             circle.attr("cx", (d) => d.x)
-                .attr("cy", (d) => d.y)
+                .attr("cy", (d) => d.y);
 
         }
 
@@ -187,21 +187,20 @@ class acd3 {
 
     handleClick(data, i) {
         let videoID = data.v_id;
-        
+
         if (this.clicked === false) {
-            console.log('click was false')
 
             //give all circles no events so on hover will not work
             d3.selectAll('circle')
-                .style('pointer-events', 'none')
+                .style('pointer-events', 'none');
 
-                //give selected circle onhover event listener
+            //give selected circle onhover event listener
             let circle = d3.select('#circleID_' + i)
                 .attr('cx', this.config.diameter / 2 + 'px')
                 .attr('cy', this.config.diameter / 2 + 'px')
                 .attr('r', this.config.diameter / 2 + 'px')
-                .style('pointer-events', 'auto')
-            
+                .style('pointer-events', 'auto');
+
             //select individual div and reassign z-index of individual div to 1. Also increase size.
             let divide = d3.select('#divID_' + i)
                 .style('z-index', '1')
@@ -210,16 +209,16 @@ class acd3 {
                 .style('border-radius', '50%')
                 .style('width', this.config.diameter + 'px')
                 .style('height', this.config.diameter + 'px');
-                console.log(divide)
+
             // select individual iframe that was clicked and increase it's size and center
-           d3.select('#' + videoID)
-            .transition()
+            d3.select('#' + videoID)
+                .transition()
                 // .style('z-index', '1')
                 .style('top', -((this.config.zoom - 1) * (this.config.diameter / 2)) + 'px')
                 .style('left', -((this.config.zoom - 1) * (this.config.diameter / 2)) + 'px')
-                .style('width',  this.config.zoom * this.config.diameter + 'px')
-                .style('height', this.config.zoom * this.config.diameter + 'px');                ;
-                
+                .style('width', this.config.zoom * this.config.diameter + 'px')
+                .style('height', this.config.zoom * this.config.diameter + 'px');
+
             //select individual foreignObject which contains div and ifram and position it to desired location
             //also give pointer event(youtube controls) back to on hover
             d3.select('#foreignID_' + i)
@@ -227,21 +226,20 @@ class acd3 {
                 .attr('x', 0)
                 .attr('y', 0);
 
-            
 
-                console.log('#divID_'+ i)
-                
-            
+
+
+
             this.clicked = true;
-            
+
 
         } else {
-            console.log('clicked was true')
 
+            //same logic when elements were originally created
             let circle = d3.select('#circleID_' + i)
                 .attr('r', (d) => d.r)
                 .attr('cx', (d) => d.x)
-                .attr('cy', (d) => d.y)
+                .attr('cy', (d) => d.y);
 
 
             d3.select('#divID_' + i)
@@ -249,23 +247,23 @@ class acd3 {
                 .style('width', (d) => (d.r * 2) + 'px')
                 .style('height', (d) => (d.r * 2) + 'px')
                 .style('border-radius', (d) => d.r + 'px')
-                .style('z-index', '0')
+                .style('z-index', '0');
 
             d3.select('#foreignID_' + i)
                 .transition()
                 .attr('x', (d) => d.x - d.r)
-                .attr('y', (d) => d.y - d.r)
+                .attr('y', (d) => d.y - d.r);
 
             d3.select('#' + videoID)
                 .transition()
                 .style('width', (d) => d.data.type === 'youtube' || d.data.type === 'vimeo' ? `${this.config.zoom * 100}%` : '100%')
                 .style('height', (d) => d.data.type === 'youtube' || d.data.type === 'vimeo' ? `${this.config.zoom * 100}%` : '100%')
                 .style('top', (d) => d.data.type === 'youtube' || d.data.type === 'vimeo' ? -((this.config.zoom - 1) * d.r) + 'px' : null)
-                .style('left', (d) => d.data.type === 'youtube' || d.data.type === 'vimeo' ? -((this.config.zoom - 1) * d.r) + 'px' : null)
+                .style('left', (d) => d.data.type === 'youtube' || d.data.type === 'vimeo' ? -((this.config.zoom - 1) * d.r) + 'px' : null);
 
             let circles = d3.selectAll('circle')
                 .style('pointer-events', 'auto');
-                
+
             this.clicked = false;
 
 

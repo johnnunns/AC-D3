@@ -35,12 +35,12 @@ let data1 = [
 
 //demo trailer data:
 let data2 = [{
-        "src": 'https://www.youtube.com/embed/F-eMt3SrfFU&controls=1',
+        "src": 'https://www.youtube.com/embed/F-eMt3SrfFU',
         "scalingParameter": 2109,
         "v_id": "22",
         "type": "youtube"
     }, {
-        "src": "https://www.youtube.com/embed/XI4Na5JW1ns&controls=1",
+        "src": "https://www.youtube.com/embed/XI4Na5JW1ns",
         "scalingParameter": 5776,
         "v_id": "2",
         "type": "youtube"
@@ -81,7 +81,7 @@ let data2 = [{
     //     "v_id": "9",
     //     "type": "youtube"
     }, {
-        "src": "https://www.youtube.com/embed/euz-KBBfAAo?controls=1",
+        "src": "https://www.youtube.com/embed/euz-KBBfAAo",
         "scalingParameter": 12920,
         "v_id": "10",
         "type": "youtube"
