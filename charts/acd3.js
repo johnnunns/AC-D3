@@ -5,6 +5,9 @@ class acd3 {
         this.playerStore = {};
         this.data = data;
         this.config = config;
+        this.clicked = false;
+        this.temp;
+        this.cache = { x: null, y: null, r: null }
     }
 
     populatePlayerStore() {
@@ -68,6 +71,9 @@ class acd3 {
         //position circle below video bubble to handle mouse events
         circle = g.append("circle")
             .attr("r", (d) => d.r)
+            .attr('id', (d, i) => "circleID_" + i)
+            .style('opacity', '0')
+            
             .on('mouseenter', (d) => {
                 this.unmuteOnMouseEnter(d.data);
             })
@@ -77,6 +83,8 @@ class acd3 {
             .on('click', (d, i) => {
                 this.handleClick(d.data, i)
             });
+            
+        
 
         foreignObject = g.append('foreignObject')
             .style('pointer-events', 'none');
@@ -107,16 +115,16 @@ class acd3 {
         else {
             foreignObject.attr('x', (d) => d.x - d.r)
                 .attr('y', (d) => d.y - d.r)
-                .attr('id', (d, i)=> 'foreignID_' + i)
+                .attr('id', (d, i) => 'foreignID_' + i)
 
             div = foreignObject.append('xhtml:div')
-                .attr('id', (d, i)=> 'divID_' + i)
+                .attr('id', (d, i) => 'divID_' + i)
                 .style('width', (d) => (d.r * 2) + 'px')
                 .style('height', (d) => (d.r * 2) + 'px')
                 .style('border-radius', (d) => d.r + 'px')
                 .style('-webkit-mask-image', '-webkit-radial-gradient(circle, white 100%, black 100%)')
                 .style('position', 'relative')
-                
+
 
             video = div.append((d) => {
                 return d.data.type === 'video'
@@ -134,6 +142,7 @@ class acd3 {
 
             circle.attr("cx", (d) => d.x)
                 .attr("cy", (d) => d.y)
+
         }
 
         video.property('volume', (d) => d.data.type === 'video' ? '0.0' : null)
@@ -160,6 +169,7 @@ class acd3 {
         console.log('enter')
         let videoID = data.v_id;
         let videoType = data.type;
+        console.log(this.clicked)
         if (videoType === 'vimeo') this.playerStore[videoID].setVolume(1);
         else if (videoType === 'youtube') this.playerStore[videoID].unMute();
         else this.playerStore[videoID].volume = 1;
@@ -169,6 +179,7 @@ class acd3 {
         console.log('leave')
         let videoID = data.v_id;
         let videoType = data.type;
+
         if (videoType === 'vimeo') this.playerStore[videoID].setVolume(0);
         else if (videoType === 'youtube') this.playerStore[videoID].mute();
         else this.playerStore[videoID].volume = 0;
@@ -176,37 +187,89 @@ class acd3 {
 
     handleClick(data, i) {
         let videoID = data.v_id;
-       d3.selectAll('div')
-       .transition()
-    //    .style('display', 'none')
-       .style('width', 0 + 'px')
-        .style('height', 0+ 'px')
         
-       d3.selectAll('circle')
-       .transition()
-            //   .style('display', 'none')
-       .style('r', 0 + 'px')
-        .style('height', 0+ 'px');
+        if (this.clicked === false) {
+            console.log('click was false')
+
+            //give all circles no events so on hover will not work
+            d3.selectAll('circle')
+                .style('pointer-events', 'none')
+
+                //give selected circle onhover event listener
+            let circle = d3.select('#circleID_' + i)
+                .attr('cx', this.config.diameter / 2 + 'px')
+                .attr('cy', this.config.diameter / 2 + 'px')
+                .attr('r', this.config.diameter / 2 + 'px')
+                .style('pointer-events', 'auto')
+            
+            //select individual div and reassign z-index of individual div to 1. Also increase size.
+            let divide = d3.select('#divID_' + i)
+                .style('z-index', '1')
+                // .style('top', 0 + 'px')
+                // .style('left', 0 + 'px')
+                .style('border-radius', '50%')
+                .style('width', this.config.diameter + 'px')
+                .style('height', this.config.diameter + 'px');
+                console.log(divide)
+            // select individual iframe that was clicked and increase it's size and center
+           d3.select('#' + videoID)
+            .transition()
+                // .style('z-index', '1')
+                .style('top', -((this.config.zoom - 1) * (this.config.diameter / 2)) + 'px')
+                .style('left', -((this.config.zoom - 1) * (this.config.diameter / 2)) + 'px')
+                .style('width',  this.config.zoom * this.config.diameter + 'px')
+                .style('height', this.config.zoom * this.config.diameter + 'px');                ;
+                
+            //select individual foreignObject which contains div and ifram and position it to desired location
+            //also give pointer event(youtube controls) back to on hover
+            d3.select('#foreignID_' + i)
+                .transition()
+                .attr('x', 0)
+                .attr('y', 0);
+
+            
+
+                console.log('#divID_'+ i)
+                
+            
+            this.clicked = true;
+            
+
+        } else {
+            console.log('clicked was true')
+
+            let circle = d3.select('#circleID_' + i)
+                .attr('r', (d) => d.r)
+                .attr('cx', (d) => d.x)
+                .attr('cy', (d) => d.y)
 
 
-        d3.select('#'+videoID)
-        .transition()
-        .style('width', 600 + 'px')
-        .style('height', 400 + 'px');
+            d3.select('#divID_' + i)
+                .transition()
+                .style('width', (d) => (d.r * 2) + 'px')
+                .style('height', (d) => (d.r * 2) + 'px')
+                .style('border-radius', (d) => d.r + 'px')
+                .style('z-index', '0')
+
+            d3.select('#foreignID_' + i)
+                .transition()
+                .attr('x', (d) => d.x - d.r)
+                .attr('y', (d) => d.y - d.r)
+
+            d3.select('#' + videoID)
+                .transition()
+                .style('width', (d) => d.data.type === 'youtube' || d.data.type === 'vimeo' ? `${this.config.zoom * 100}%` : '100%')
+                .style('height', (d) => d.data.type === 'youtube' || d.data.type === 'vimeo' ? `${this.config.zoom * 100}%` : '100%')
+                .style('top', (d) => d.data.type === 'youtube' || d.data.type === 'vimeo' ? -((this.config.zoom - 1) * d.r) + 'px' : null)
+                .style('left', (d) => d.data.type === 'youtube' || d.data.type === 'vimeo' ? -((this.config.zoom - 1) * d.r) + 'px' : null)
+
+            let circles = d3.selectAll('circle')
+                .style('pointer-events', 'auto');
+                
+            this.clicked = false;
 
 
-        d3.select('#foreignID_' + i)
-        .style('pointer-events', 'auto')
-        
-        // d3.selectAll('foreignObject'f).transition().attr('x', this.config.diameter)
-        d3.select('#divID_'+i)
-        .transition()
-        .style('border-radius', 0 + 'px')
-        .style('width', 800 + 'px')
-        .style('height', 800 + 'px')
-        console.log(this.playerStore[videoID])
-        this.playerStore[videoID].unMute();
-
+        }
     }
 
     createBubbleChart() {

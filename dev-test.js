@@ -35,13 +35,13 @@ let data1 = [
 
 //demo trailer data:
 let data2 = [{
-        "src": 'https://www.youtube.com/embed/F-eMt3SrfFU',
-        "scalingParameter": 21097531,
+        "src": 'https://www.youtube.com/embed/F-eMt3SrfFU&controls=1',
+        "scalingParameter": 2109,
         "v_id": "22",
         "type": "youtube"
     }, {
-        "src": "https://www.youtube.com/embed/XI4Na5JW1ns",
-        "scalingParameter": 177639,
+        "src": "https://www.youtube.com/embed/XI4Na5JW1ns&controls=1",
+        "scalingParameter": 5776,
         "v_id": "2",
         "type": "youtube"
     // }, {
@@ -81,8 +81,8 @@ let data2 = [{
     //     "v_id": "9",
     //     "type": "youtube"
     }, {
-        "src": "https://www.youtube.com/embed/euz-KBBfAAo",
-        "scalingParameter": 19562920,
+        "src": "https://www.youtube.com/embed/euz-KBBfAAo?controls=1",
+        "scalingParameter": 12920,
         "v_id": "10",
         "type": "youtube"
     }]
@@ -98,7 +98,7 @@ const config1 = {
 const config2 = {
   htmlAnchorID: 'vis2',
   diameter: 600,
-  zoom: 2,
+  zoom: 1,
   resolutionThresholds: [250, 500]
 }
 
